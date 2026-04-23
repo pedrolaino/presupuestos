@@ -27,16 +27,25 @@ export function QuoteDetail({ quote, items, profile }: QuoteDetailProps) {
   const router = useRouter()
   const [status, setStatus] = useState<QuoteStatus>(quote.status)
   const [savingStatus, setSavingStatus] = useState(false)
+  const [statusError, setStatusError] = useState('')
   const [downloading, setDownloading] = useState(false)
 
   async function handleStatusChange(newStatus: QuoteStatus) {
     if (newStatus === status) return
     setSavingStatus(true)
+    setStatusError('')
     const supabase = createClient()
-    await supabase
+    const { error } = await supabase
       .from('quotes')
       .update({ status: newStatus, updated_at: new Date().toISOString() })
       .eq('id', quote.id)
+
+    if (error) {
+      setStatusError('No se pudo cambiar el estado. Intentá de nuevo.')
+      setSavingStatus(false)
+      return
+    }
+
     setStatus(newStatus)
     setSavingStatus(false)
     router.refresh()
@@ -117,6 +126,9 @@ export function QuoteDetail({ quote, items, profile }: QuoteDetailProps) {
             </div>
             {savingStatus && (
               <span className="text-xs text-slate-400">Guardando...</span>
+            )}
+            {statusError && (
+              <span className="text-xs text-red-500">{statusError}</span>
             )}
           </div>
         </CardContent>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
@@ -32,6 +32,14 @@ export function ProfileForm({ profile, userId }: ProfileFormProps) {
   const [logoUrl, setLogoUrl] = useState<string | null>(profile?.logo_url ?? null)
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(profile?.logo_url ?? null)
+  const objectUrlRef = useRef<string | null>(null)
+
+  // Libera el object URL al desmontar para evitar memory leaks
+  useEffect(() => {
+    return () => {
+      if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current)
+    }
+  }, [])
 
   const [loading, setLoading] = useState(false)
   const [uploadingLogo, setUploadingLogo] = useState(false)
@@ -56,8 +64,11 @@ export function ProfileForm({ profile, userId }: ProfileFormProps) {
       return
     }
 
+    if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current)
+    const url = URL.createObjectURL(file)
+    objectUrlRef.current = url
     setLogoFile(file)
-    setLogoPreview(URL.createObjectURL(file))
+    setLogoPreview(url)
     setError('')
   }
 
@@ -111,8 +122,14 @@ export function ProfileForm({ profile, userId }: ProfileFormProps) {
 
     setLoading(true)
 
+    // Si el usuario quitó el logo explícitamente → null; si tiene archivo nuevo → subirlo
     const finalLogoUrl = logoPreview === null ? null : await uploadLogo()
-    if (uploadingLogo) return
+
+    // Si había un archivo para subir pero falló, no tocar la DB
+    if (logoFile !== null && finalLogoUrl === null) {
+      setLoading(false)
+      return
+    }
 
     const supabase = createClient()
     const { error: dbError } = await supabase

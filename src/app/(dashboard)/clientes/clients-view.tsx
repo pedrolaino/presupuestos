@@ -110,7 +110,14 @@ export function ClientsView({ initialClients }: ClientsViewProps) {
   async function handleDelete(id: string) {
     setDeleteLoading(true)
     const supabase = createClient()
-    await supabase.from('clients').delete().eq('id', id)
+    const { error: dbError } = await supabase.from('clients').delete().eq('id', id)
+
+    if (dbError) {
+      setError('No se pudo eliminar el cliente. Intentá de nuevo.')
+      setDeleteLoading(false)
+      return
+    }
+
     setClients((prev) => prev.filter((c) => c.id !== id))
     setDeleteId(null)
     setDeleteLoading(false)
@@ -280,12 +287,17 @@ export function ClientsView({ initialClients }: ClientsViewProps) {
       {/* Modal confirmar eliminación */}
       <Modal
         open={!!deleteId}
-        onClose={() => setDeleteId(null)}
+        onClose={() => { setDeleteId(null); setError('') }}
         title="Eliminar cliente"
       >
-        <p className="text-sm text-slate-600 mb-6">
+        <p className="text-sm text-slate-600 mb-4">
           ¿Estás seguro que querés eliminar este cliente? Esta acción no se puede deshacer.
         </p>
+        {error && (
+          <p className="text-sm text-red-600 bg-red-50 border border-red-200 px-3 py-2 rounded-md mb-4">
+            {error}
+          </p>
+        )}
         <div className="flex gap-3 justify-end">
           <Button variant="ghost" onClick={() => setDeleteId(null)} disabled={deleteLoading}>
             Cancelar

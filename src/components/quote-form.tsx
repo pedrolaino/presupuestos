@@ -202,13 +202,32 @@ export function QuoteForm({ clients, profile, userId, existingQuote, existingIte
       if (dbError) { setError('Error al guardar el presupuesto.'); setLoading(false); return }
       quoteId = existingQuote.id
 
-      // Delete and re-insert items
-      await supabase.from('quote_items').delete().eq('quote_id', quoteId)
+      // Guardamos los IDs de los ítems viejos antes de insertar los nuevos
+      const { data: oldItems } = await supabase
+        .from('quote_items')
+        .select('id')
+        .eq('quote_id', quoteId)
+
+      // Insertamos los nuevos ítems primero
+      const itemsPayload = items.map((item, idx) => ({
+        quote_id: quoteId,
+        description: item.description.trim(),
+        quantity: parseNum(item.quantity),
+        unit_price: parseNum(item.unit_price),
+        subtotal: calcSubtotal(item.quantity, item.unit_price),
+        sort_order: idx,
+      }))
+
+      const { error: itemsError } = await supabase.from('quote_items').insert(itemsPayload)
+      if (itemsError) { setError('Error al guardar los ítems.'); setLoading(false); return }
+
+      // Solo borramos los viejos después de que el insert fue exitoso
+      if (oldItems && oldItems.length > 0) {
+        await supabase.from('quote_items').delete().in('id', oldItems.map((i) => i.id))
+      }
     } else {
       // Get next quote number
-      const { data: nextNumData } = await supabase.rpc('get_next_quote_number', {
-        p_user_id: userId,
-      })
+      const { data: nextNumData } = await supabase.rpc('get_next_quote_number')
 
       const { data: newQuote, error: dbError } = await supabase
         .from('quotes')
@@ -218,20 +237,20 @@ export function QuoteForm({ clients, profile, userId, existingQuote, existingIte
 
       if (dbError || !newQuote) { setError('Error al crear el presupuesto.'); setLoading(false); return }
       quoteId = newQuote.id
+
+      // Insert items
+      const itemsPayload = items.map((item, idx) => ({
+        quote_id: quoteId,
+        description: item.description.trim(),
+        quantity: parseNum(item.quantity),
+        unit_price: parseNum(item.unit_price),
+        subtotal: calcSubtotal(item.quantity, item.unit_price),
+        sort_order: idx,
+      }))
+
+      const { error: itemsError } = await supabase.from('quote_items').insert(itemsPayload)
+      if (itemsError) { setError('Error al guardar los ítems.'); setLoading(false); return }
     }
-
-    // Insert items
-    const itemsPayload = items.map((item, idx) => ({
-      quote_id: quoteId,
-      description: item.description.trim(),
-      quantity: parseNum(item.quantity),
-      unit_price: parseNum(item.unit_price),
-      subtotal: calcSubtotal(item.quantity, item.unit_price),
-      sort_order: idx,
-    }))
-
-    const { error: itemsError } = await supabase.from('quote_items').insert(itemsPayload)
-    if (itemsError) { setError('Error al guardar los ítems.'); setLoading(false); return }
 
     router.push(`/presupuestos/${quoteId}`)
     router.refresh()

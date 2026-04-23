@@ -17,8 +17,15 @@ import type { Quote, QuoteItem, Profile } from '@/types'
 
 function fontDataUrl(filename: string): string {
   const filePath = path.join(process.cwd(), 'public', 'fonts', filename)
-  const buffer = fs.readFileSync(filePath)
-  return `data:font/truetype;base64,${buffer.toString('base64')}`
+  try {
+    const buffer = fs.readFileSync(filePath)
+    return `data:font/truetype;base64,${buffer.toString('base64')}`
+  } catch {
+    throw new Error(
+      `No se pudo cargar la fuente "${filename}". ` +
+      `Verificá que el archivo existe en public/fonts/. Ruta buscada: ${filePath}`
+    )
+  }
 }
 
 Font.register({

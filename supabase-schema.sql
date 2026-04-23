@@ -167,8 +167,10 @@ create policy "Logos are publicly readable"
 
 -- ============================================================
 -- FUNCIÓN: obtener próximo número de presupuesto
+-- Usa auth.uid() internamente para evitar que un cliente
+-- pase el UUID de otro usuario.
 -- ============================================================
-create or replace function get_next_quote_number(p_user_id uuid)
+create or replace function get_next_quote_number()
 returns integer as $$
 declare
   next_num integer;
@@ -176,7 +178,9 @@ begin
   select coalesce(max(quote_number), 0) + 1
   into next_num
   from quotes
-  where user_id = p_user_id;
+  where user_id = auth.uid();
   return next_num;
 end;
 $$ language plpgsql security definer;
+
+grant execute on function get_next_quote_number() to authenticated;
