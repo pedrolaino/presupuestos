@@ -291,8 +291,8 @@ export function LandingContent({ isLoggedIn }: Props) {
 
       {/* ── Checklist ── */}
       <section className="py-16 px-4 sm:px-6 bg-slate-50 border-y border-slate-200">
-        <div className="max-w-3xl mx-auto">
-          <StaggerGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="max-w-2xl mx-auto">
+          <StaggerGroup className="flex flex-col sm:grid sm:grid-cols-2 gap-y-4 gap-x-12">
             {[
               'PDF con tu logo y datos de tu negocio',
               'Clientes guardados para reutilizar',
@@ -302,9 +302,9 @@ export function LandingContent({ isLoggedIn }: Props) {
               'Funciona desde el celular',
             ].map((item) => (
               <StaggerItem key={item}>
-                <div className="flex items-center gap-3 text-sm text-slate-700">
-                  <CheckCircle className="w-4 h-4 text-[#1e3a5f] shrink-0" />
-                  {item}
+                <div className="flex items-start gap-3 text-sm text-slate-700">
+                  <CheckCircle className="w-4 h-4 text-[#1e3a5f] shrink-0 mt-0.5" />
+                  <span>{item}</span>
                 </div>
               </StaggerItem>
             ))}
