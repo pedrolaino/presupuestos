@@ -95,7 +95,7 @@ export function MobileHeader() {
           <div className="bg-white/10 rounded-lg p-1.5">
             <FileText className="w-4 h-4 text-white" />
           </div>
-          <span className="text-white font-bold text-base tracking-tight">PresupuestoPro</span>
+          <span className="text-white font-bold text-base tracking-tight">Presu</span>
         </div>
         <button
           onClick={() => setOpen(true)}
@@ -126,7 +126,7 @@ export function MobileHeader() {
             <div className="bg-white/10 rounded-lg p-1.5">
               <FileText className="w-4 h-4 text-white" />
             </div>
-            <span className="text-white font-bold text-base tracking-tight">PresupuestoPro</span>
+            <span className="text-white font-bold text-base tracking-tight">Presu</span>
           </div>
           <button
             onClick={() => setOpen(false)}
@@ -151,7 +151,7 @@ export function Sidebar() {
           <div className="bg-white/10 rounded-lg p-1.5">
             <FileText className="w-5 h-5 text-white" />
           </div>
-          <span className="text-white font-bold text-base tracking-tight">PresupuestoPro</span>
+          <span className="text-white font-bold text-base tracking-tight">Presu</span>
         </div>
       </div>
       <NavLinks />

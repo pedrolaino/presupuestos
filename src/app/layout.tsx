@@ -6,8 +6,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'PresupuestoPro',
-  description: 'Generá presupuestos profesionales en segundos',
+  title: 'Presu — Presupuestos profesionales',
+  description: 'Generá presupuestos profesionales en segundos. Gratis, sin complicaciones.',
 }
 
 export default function RootLayout({

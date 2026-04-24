@@ -44,7 +44,7 @@ export default function LoginPage() {
           <div className="bg-[#1e3a5f] text-white rounded-xl p-3 mb-3">
             <FileText className="w-7 h-7" />
           </div>
-          <h1 className="text-2xl font-bold text-[#1e3a5f]">PresupuestoPro</h1>
+          <h1 className="text-2xl font-bold text-[#1e3a5f]">Presu</h1>
           <p className="text-slate-500 text-sm mt-1">Tu herramienta de presupuestos</p>
         </div>
 

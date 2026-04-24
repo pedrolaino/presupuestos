@@ -29,8 +29,8 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  const publicPaths = ['/login', '/register']
-  const isPublicPath = publicPaths.some((p) => pathname.startsWith(p))
+  const publicPaths = ['/', '/login', '/register', '/demo', '/api/demo']
+  const isPublicPath = publicPaths.some((p) => pathname === p || pathname.startsWith(p + '/'))
 
   if (!user && !isPublicPath) {
     const url = request.nextUrl.clone()
@@ -38,7 +38,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  if (user && isPublicPath) {
+  // Redirigir a dashboard si ya está logueado e intenta entrar a login/register
+  const authOnlyPaths = ['/login', '/register']
+  if (user && authOnlyPaths.some((p) => pathname.startsWith(p))) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
