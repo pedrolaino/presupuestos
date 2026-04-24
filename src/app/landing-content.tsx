@@ -289,22 +289,31 @@ export function LandingContent({ isLoggedIn }: Props) {
         </div>
       </section>
 
-      {/* ── Checklist ── */}
-      <section className="py-16 px-4 sm:px-6 bg-slate-50 border-y border-slate-200">
-        <div className="max-w-3xl mx-auto">
-          <StaggerGroup className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
+      {/* ── Feature grid ── */}
+      <section className="py-20 px-4 sm:px-6 bg-slate-50 border-y border-slate-200">
+        <div className="max-w-4xl mx-auto">
+          <InView className="text-center mb-12">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#1e3a5f]/60 mb-3">Incluido en tu cuenta gratuita</p>
+            <h3 className="text-2xl sm:text-3xl font-bold text-slate-900">Todo lo que necesitás desde el día uno</h3>
+          </InView>
+          <StaggerGroup className="grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-10">
             {[
-              'PDF con tu logo y datos de tu negocio',
-              'Clientes guardados para reutilizar',
-              'Descuento por porcentaje o monto fijo',
-              'Estado del presupuesto en tiempo real',
-              'Historial completo de presupuestos',
-              'Funciona desde el celular',
-            ].map((item) => (
-              <StaggerItem key={item}>
-                <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium text-slate-700 shadow-sm">
-                  <CheckCircle className="w-4 h-4 text-[#1e3a5f] shrink-0" />
-                  <span>{item}</span>
+              { icon: FileText,    title: 'PDFs profesionales',      desc: 'Con tu logo, tipografía Inter y diseño limpio.' },
+              { icon: Users,       title: 'Clientes guardados',      desc: 'Seleccioná clientes existentes con un click.' },
+              { icon: Shield,      title: 'Sin costo',               desc: 'Cero planes, cero límites, cero tarjeta.' },
+              { icon: Download,    title: 'Descarga inmediata',      desc: 'El PDF está listo en segundos.' },
+              { icon: Clock,       title: 'Historial completo',      desc: 'Accedé y re-descargá cualquier presupuesto.' },
+              { icon: CheckCircle, title: 'Estado en tiempo real',   desc: 'Borrador, enviado, aprobado o rechazado.' },
+            ].map((f) => (
+              <StaggerItem key={f.title}>
+                <div className="flex flex-col items-center text-center sm:items-start sm:text-left gap-3">
+                  <div className="bg-[#1e3a5f]/8 text-[#1e3a5f] w-11 h-11 rounded-xl flex items-center justify-center shrink-0">
+                    <f.icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900 text-sm">{f.title}</p>
+                    <p className="text-slate-500 text-xs leading-relaxed mt-0.5">{f.desc}</p>
+                  </div>
                 </div>
               </StaggerItem>
             ))}
