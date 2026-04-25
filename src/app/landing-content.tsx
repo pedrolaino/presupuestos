@@ -268,7 +268,7 @@ export function LandingContent({ isLoggedIn }: Props) {
           </InView>
           <StaggerGroup className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {[
-              { icon: FileText, title: 'PDFs con diseño profesional', desc: 'Cada presupuesto se genera con tipografía Inter, logo de tu negocio, desglose de ítems y totales. Limpio, moderno y listo para enviar.' },
+              { icon: FileText, title: 'PDFs con diseño profesional', desc: 'Cada presupuesto tiene tu logo, datos de contacto, desglose de ítems y totales. Limpio, moderno y listo para enviar.' },
               { icon: Users, title: 'Clientes guardados', desc: 'Guardá la información de tus clientes habituales y seleccionálos con un click al crear un nuevo presupuesto. Sin reescribir nada.' },
               { icon: Clock, title: 'Historial completo', desc: 'Todos tus presupuestos quedan guardados con estado (borrador, enviado, aprobado). Podés re-descargar cualquier PDF cuando quieras.' },
               { icon: Shield, title: 'Gratis, sin límites ocultos', desc: 'No hay planes de pago, no hay límite de presupuestos, no hay funciones bloqueadas. Creá todo lo que necesitás sin pagar nada.' },
