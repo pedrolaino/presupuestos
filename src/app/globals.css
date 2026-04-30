@@ -1,18 +1,99 @@
 @import "tailwindcss";
 
-:root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+@theme {
+  /* Warm editorial palette */
+  --color-cream: #F4EDE0;
+  --color-surface: #FDFAF4;
+  --color-border: #E0D5C5;
+  --color-border-light: #EDE6D8;
+
+  /* Text scale */
+  --color-ink: #1A1510;
+  --color-ink-2: #6E5E4A;
+  --color-ink-3: #A8957F;
+  --color-ink-4: #C8B9A6;
+
+  /* Accent: terracotta / burnt sienna */
+  --color-rust: #C14B1A;
+  --color-rust-dark: #A33D14;
+  --color-rust-deeper: #872F0F;
+  --color-rust-light: #F9EDE6;
+  --color-rust-muted: #F2DDD4;
+
+  /* Sidebar */
+  --color-sidebar: #141009;
+  --color-sidebar-surface: #1D1610;
+  --color-sidebar-border: #2A2018;
+  --color-sidebar-text: #B8A892;
+  --color-sidebar-hover: #261E16;
+
+  /* Semantic */
+  --color-success: #2D5A3D;
+  --color-success-bg: #EAF2ED;
+  --color-warning: #7A5C0A;
+  --color-warning-bg: #FEF6E0;
+  --color-danger: #8B2C2C;
+  --color-danger-bg: #FCEAEA;
+  --color-info: #1A4A6E;
+  --color-info-bg: #E8F0F8;
+
+  /* Fonts */
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #F4EDE0;
+  color: #1A1510;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Warm custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #EDE6D8;
+}
+::-webkit-scrollbar-thumb {
+  background: #C8B9A6;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A8957F;
+}
+
+/* Sidebar scrollbar */
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: #1D1610;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #3A2E24;
+}
+
+/* Grain texture overlay */
+.grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
 }
 
 @layer base {
   * {
     box-sizing: border-box;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 600;
   }
 }

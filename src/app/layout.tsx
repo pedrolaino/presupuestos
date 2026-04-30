@@ -1,9 +1,26 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Playfair_Display, DM_Sans, DM_Mono } from 'next/font/google'
 import { ProgressBar } from '@/components/progress-bar'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--loaded-playfair',
+  display: 'swap',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--loaded-dm-sans',
+  display: 'swap',
+})
+
+const dmMono = DM_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--loaded-dm-mono',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Presu — Presupuestos profesionales',
@@ -16,8 +33,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es">
-      <body className={inter.className}>
+    <html lang="es" className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable}`}>
+      <body style={{ fontFamily: 'var(--loaded-dm-sans, DM Sans, system-ui, sans-serif)' }}>
         <ProgressBar />
         {children}
       </body>

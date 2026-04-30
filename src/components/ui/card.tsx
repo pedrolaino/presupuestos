@@ -4,7 +4,10 @@ import { HTMLAttributes } from 'react'
 export function Card({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn('bg-white rounded-xl border border-slate-200 shadow-sm', className)}
+      className={cn(
+        'bg-surface rounded-xl border border-border shadow-sm shadow-ink/5',
+        className
+      )}
       {...props}
     >
       {children}
@@ -14,7 +17,7 @@ export function Card({ className, children, ...props }: HTMLAttributes<HTMLDivEl
 
 export function CardHeader({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn('px-6 py-4 border-b border-slate-200', className)} {...props}>
+    <div className={cn('px-6 py-4 border-b border-border', className)} {...props}>
       {children}
     </div>
   )
@@ -30,7 +33,7 @@ export function CardContent({ className, children, ...props }: HTMLAttributes<HT
 
 export function CardFooter({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn('px-6 py-4 border-t border-slate-200', className)} {...props}>
+    <div className={cn('px-6 py-4 border-t border-border', className)} {...props}>
       {children}
     </div>
   )
