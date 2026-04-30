@@ -11,9 +11,7 @@ import path from 'path'
 import fs from 'fs'
 import type { Quote, QuoteItem, Profile } from '@/types'
 
-// ─── Register Inter ───────────────────────────────────────────────────────────
-// Leemos los TTF con fs y los pasamos como data: URLs.
-// Node.js fetch soporta data: de forma nativa, evitando el problema con file://.
+// ─── Font loader ──────────────────────────────────────────────────────────────
 
 function fontDataUrl(filename: string): string {
   const filePath = path.join(process.cwd(), 'public', 'fonts', filename)
@@ -29,12 +27,11 @@ function fontDataUrl(filename: string): string {
 }
 
 Font.register({
-  family: 'Inter',
+  family: 'DMSans',
   fonts: [
-    { src: fontDataUrl('Inter-Regular.ttf'),  fontWeight: 400 },
-    { src: fontDataUrl('Inter-Medium.ttf'),   fontWeight: 500 },
-    { src: fontDataUrl('Inter-SemiBold.ttf'), fontWeight: 600 },
-    { src: fontDataUrl('Inter-Bold.ttf'),     fontWeight: 700 },
+    { src: fontDataUrl('DMSans-Regular.ttf'), fontWeight: 400 },
+    { src: fontDataUrl('DMSans-Medium.ttf'),  fontWeight: 500 },
+    { src: fontDataUrl('DMSans-Bold.ttf'),    fontWeight: 700 },
   ],
 })
 
@@ -59,56 +56,54 @@ function fmtDate(d: string) {
 }
 
 function pad(n: number) {
-  return String(n).padStart(4, '0')
+  return `#${String(n).padStart(4, '0')}`
 }
 
+// ─── Design tokens ────────────────────────────────────────────────────────────
+//  "Taller" palette — matches the web UI
 
-// ─── Tokens ───────────────────────────────────────────────────────────────────
-
-const NAVY   = '#1e3a5f'
-const GRAY1  = '#374151'
-const GRAY2  = '#6b7280'
-const GRAY3  = '#9ca3af'
-const GRAY4  = '#f3f4f6'
-const BORDER = '#e5e7eb'
-const WHITE  = '#ffffff'
-const GREEN  = '#15803d'
+const INK      = '#1A1510'   // deep warm charcoal
+const INK2     = '#6E5E4A'   // warm brown secondary
+const INK3     = '#A8957F'   // warm tan tertiary
+const RUST     = '#C14B1A'   // terracotta accent
+const RUST_LT  = '#F9EDE6'   // light terracotta bg
+const BORDER   = '#E0D5C5'   // warm beige border
+const TABLE_BG = '#EDE6D8'   // warm cream for table header
+const WHITE    = '#FFFFFF'
+const SUCCESS  = '#2D5A3D'   // muted green for discount
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const s = StyleSheet.create({
   page: {
-    fontFamily: 'Inter',
+    fontFamily: 'DMSans',
     fontWeight: 400,
     fontSize: 9,
-    color: GRAY1,
+    color: INK,
     backgroundColor: WHITE,
     paddingBottom: 64,
   },
-  // Contenedor del body que ocupa todo el espacio disponible
   bodyWrapper: {
     flex: 1,
     paddingHorizontal: 48,
-    paddingTop: 28,
+    paddingTop: 24,
     flexDirection: 'column',
   },
-  // Empuja el bloque de totales hacia abajo
   spacer: {
     flexGrow: 1,
   },
-  // Bloque inferior: notas + totales, siempre al fondo
   bottomBlock: {
     marginTop: 16,
   },
 
-  // ── Top header ──────────────────────────────────────────────────────────────
+  // ── Header ──────────────────────────────────────────────────────────────────
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    paddingTop: 48,
+    paddingTop: 44,
     paddingHorizontal: 48,
-    marginBottom: 28,
+    marginBottom: 0,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -117,111 +112,121 @@ const s = StyleSheet.create({
     flex: 1,
   },
   logo: {
-    width: 56,
-    height: 56,
+    width: 52,
+    height: 52,
     objectFit: 'contain',
-    borderRadius: 4,
+    borderRadius: 6,
   },
   logoFallback: {
-    width: 56,
-    height: 56,
-    borderRadius: 4,
-    backgroundColor: GRAY4,
+    width: 52,
+    height: 52,
+    borderRadius: 6,
+    backgroundColor: RUST_LT,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: BORDER,
   },
   logoFallbackText: {
     fontWeight: 700,
     fontSize: 22,
-    color: NAVY,
+    color: RUST,
   },
   businessName: {
     fontWeight: 700,
-    fontSize: 14,
-    color: NAVY,
-    marginBottom: 3,
+    fontSize: 13,
+    color: INK,
+    marginBottom: 4,
   },
   businessLine: {
     fontSize: 8.5,
-    color: GRAY2,
+    color: INK2,
     marginBottom: 2,
   },
   headerRight: {
     alignItems: 'flex-end',
   },
-  docTitle: {
-    fontSize: 8,
-    fontWeight: 600,
-    color: GRAY3,
+  docLabel: {
+    fontSize: 7.5,
+    fontWeight: 500,
+    color: INK3,
     textTransform: 'uppercase',
-    letterSpacing: 1.5,
-    marginBottom: 4,
+    letterSpacing: 1.8,
+    marginBottom: 6,
   },
   docNumber: {
     fontWeight: 700,
-    fontSize: 26,
-    color: NAVY,
+    fontSize: 28,
+    color: RUST,
     letterSpacing: -0.5,
   },
   docDate: {
     fontSize: 8.5,
-    color: GRAY2,
-    marginTop: 5,
+    color: INK3,
+    marginTop: 6,
   },
 
   // ── Divider ─────────────────────────────────────────────────────────────────
-  divider: {
+  dividerThin: {
     borderBottomWidth: 1,
     borderBottomColor: BORDER,
     marginBottom: 24,
     marginHorizontal: 48,
   },
-  dividerThick: {
+  dividerAccent: {
     borderBottomWidth: 2,
-    borderBottomColor: NAVY,
+    borderBottomColor: RUST,
     marginBottom: 0,
+    marginTop: 20,
     marginHorizontal: 48,
   },
 
-  // ── Client info ─────────────────────────────────────────────────────────────
+  // ── Client section ──────────────────────────────────────────────────────────
   clientSection: {
     marginBottom: 28,
+    marginTop: 4,
+  },
+  clientBlock: {
+    backgroundColor: TABLE_BG,
+    borderRadius: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
   },
   clientLabel: {
-    fontSize: 7.5,
-    fontWeight: 600,
-    color: GRAY3,
+    fontSize: 7,
+    fontWeight: 700,
+    color: INK3,
     textTransform: 'uppercase',
-    letterSpacing: 1.2,
-    marginBottom: 6,
+    letterSpacing: 1.4,
+    marginBottom: 5,
   },
   clientName: {
-    fontWeight: 600,
+    fontWeight: 700,
     fontSize: 11,
-    color: GRAY1,
+    color: INK,
     marginBottom: 3,
   },
   clientLine: {
     fontSize: 8.5,
-    color: GRAY2,
+    color: INK2,
     marginBottom: 2,
   },
 
   // ── Table ───────────────────────────────────────────────────────────────────
   tableHead: {
     flexDirection: 'row',
-    backgroundColor: GRAY4,
+    backgroundColor: INK,
     paddingVertical: 7,
     paddingHorizontal: 10,
     borderRadius: 4,
     marginBottom: 1,
   },
   th: {
-    fontSize: 7.5,
-    fontWeight: 600,
-    color: GRAY2,
+    fontSize: 7,
+    fontWeight: 700,
+    color: WHITE,
     textTransform: 'uppercase',
-    letterSpacing: 0.6,
+    letterSpacing: 0.8,
   },
   tableRow: {
     flexDirection: 'row',
@@ -230,18 +235,21 @@ const s = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: BORDER,
   },
+  tableRowAlt: {
+    backgroundColor: '#FDFAF4',
+  },
   td: {
     fontSize: 9,
-    color: GRAY1,
+    color: INK,
   },
   tdMuted: {
     fontSize: 9,
-    color: GRAY2,
+    color: INK2,
   },
   tdStrong: {
     fontSize: 9,
-    fontWeight: 600,
-    color: GRAY1,
+    fontWeight: 700,
+    color: INK,
   },
 
   cDesc:  { flex: 1 },
@@ -252,10 +260,10 @@ const s = StyleSheet.create({
   // ── Totals ──────────────────────────────────────────────────────────────────
   totalsOuter: {
     alignItems: 'flex-end',
-    marginTop: 12,
+    marginTop: 14,
   },
   totalsBox: {
-    width: 230,
+    width: 240,
   },
   totalsRow: {
     flexDirection: 'row',
@@ -264,57 +272,63 @@ const s = StyleSheet.create({
   },
   totalsLabel: {
     fontSize: 9,
-    color: GRAY2,
+    color: INK2,
   },
   totalsValue: {
     fontSize: 9,
     fontWeight: 500,
-    color: GRAY1,
+    color: INK,
   },
   discountValue: {
     fontSize: 9,
-    fontWeight: 600,
-    color: GREEN,
+    fontWeight: 700,
+    color: SUCCESS,
   },
   totalsDivider: {
     borderTopWidth: 1,
     borderTopColor: BORDER,
     marginVertical: 6,
   },
-  totalRow: {
+  totalRowWrapper: {
+    backgroundColor: RUST_LT,
+    borderRadius: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginTop: 4,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 4,
+    borderWidth: 1,
+    borderColor: BORDER,
   },
   totalLabel: {
-    fontSize: 11,
+    fontSize: 9,
     fontWeight: 700,
-    color: NAVY,
+    color: RUST,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
   },
   totalValue: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 700,
-    color: NAVY,
+    color: RUST,
   },
 
   // ── Notes ───────────────────────────────────────────────────────────────────
   notesSection: {
-    marginTop: 28,
+    marginTop: 24,
   },
   notesLabel: {
-    fontSize: 7.5,
-    fontWeight: 600,
-    color: GRAY3,
+    fontSize: 7,
+    fontWeight: 700,
+    color: INK3,
     textTransform: 'uppercase',
-    letterSpacing: 1.2,
+    letterSpacing: 1.4,
     marginBottom: 6,
   },
   notesText: {
     fontSize: 9,
-    color: GRAY2,
+    color: INK2,
     lineHeight: 1.7,
   },
 
@@ -332,12 +346,12 @@ const s = StyleSheet.create({
     borderTopColor: BORDER,
   },
   footerLeft: {
-    fontSize: 8,
-    color: GRAY3,
+    fontSize: 7.5,
+    color: INK3,
   },
   footerRight: {
-    fontSize: 8,
-    color: GRAY3,
+    fontSize: 7.5,
+    color: INK3,
   },
 })
 
@@ -355,7 +369,7 @@ export function QuotePDF({ quote, items, profile }: QuotePDFProps) {
 
   return (
     <Document
-      title={`Presupuesto #${pad(quote.quote_number)} — ${quote.client_name}`}
+      title={`Presupuesto ${pad(quote.quote_number)} — ${quote.client_name}`}
       author={bizName}
     >
       <Page size="A4" style={s.page}>
@@ -391,27 +405,30 @@ export function QuotePDF({ quote, items, profile }: QuotePDFProps) {
           </View>
 
           <View style={s.headerRight}>
-            <Text style={s.docTitle}>Presupuesto</Text>
-            <Text style={s.docNumber}>#{pad(quote.quote_number)}</Text>
+            <Text style={s.docLabel}>Presupuesto</Text>
+            <Text style={s.docNumber}>{pad(quote.quote_number)}</Text>
             <Text style={s.docDate}>{fmtDate(quote.created_at)}</Text>
           </View>
         </View>
 
-        <View style={s.dividerThick} />
+        {/* Terracotta accent line */}
+        <View style={s.dividerAccent} />
 
-        {/* ── Body: flex column, totals siempre al fondo ── */}
+        {/* ── Body ── */}
         <View style={s.bodyWrapper}>
 
-          {/* ── Client ── */}
+          {/* ── Client block ── */}
           <View style={s.clientSection}>
             <Text style={s.clientLabel}>Para</Text>
-            <Text style={s.clientName}>{quote.client_name}</Text>
-            {quote.client_email ? (
-              <Text style={s.clientLine}>{quote.client_email}</Text>
-            ) : null}
-            {quote.client_phone ? (
-              <Text style={s.clientLine}>{quote.client_phone}</Text>
-            ) : null}
+            <View style={s.clientBlock}>
+              <Text style={s.clientName}>{quote.client_name}</Text>
+              {quote.client_email ? (
+                <Text style={s.clientLine}>{quote.client_email}</Text>
+              ) : null}
+              {quote.client_phone ? (
+                <Text style={s.clientLine}>{quote.client_phone}</Text>
+              ) : null}
+            </View>
           </View>
 
           {/* ── Table ── */}
@@ -423,8 +440,12 @@ export function QuotePDF({ quote, items, profile }: QuotePDFProps) {
               <Text style={[s.th, s.cSub]}>Subtotal</Text>
             </View>
 
-            {items.map((item) => (
-              <View key={item.id} style={s.tableRow} wrap={false}>
+            {items.map((item, idx) => (
+              <View
+                key={item.id}
+                style={[s.tableRow, idx % 2 === 1 ? s.tableRowAlt : {}]}
+                wrap={false}
+              >
                 <Text style={[s.td, s.cDesc]}>{item.description}</Text>
                 <Text style={[s.tdMuted, s.cQty]}>
                   {Number(item.quantity) % 1 === 0
@@ -437,13 +458,12 @@ export function QuotePDF({ quote, items, profile }: QuotePDFProps) {
             ))}
           </View>
 
-          {/* Spacer: empuja el bloque de abajo al fondo de la página */}
+          {/* Spacer */}
           <View style={s.spacer} />
 
-          {/* ── Bottom block: notas + totales ── */}
+          {/* ── Bottom: notas + totales ── */}
           <View style={s.bottomBlock}>
 
-            {/* Notas encima del total */}
             {quote.notes ? (
               <View style={s.notesSection}>
                 <Text style={s.notesLabel}>Notas</Text>
@@ -451,7 +471,6 @@ export function QuotePDF({ quote, items, profile }: QuotePDFProps) {
               </View>
             ) : null}
 
-            {/* Totales */}
             <View style={s.totalsOuter}>
               <View style={s.totalsBox}>
                 <View style={s.totalsRow}>
@@ -472,7 +491,7 @@ export function QuotePDF({ quote, items, profile }: QuotePDFProps) {
 
                 <View style={s.totalsDivider} />
 
-                <View style={s.totalRow}>
+                <View style={s.totalRowWrapper}>
                   <Text style={s.totalLabel}>Total</Text>
                   <Text style={s.totalValue}>{fmt(quote.total)}</Text>
                 </View>
